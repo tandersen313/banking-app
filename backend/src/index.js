@@ -12,8 +12,10 @@ const PORT = process.env.PORT || 3001;
 
 // Middleware
 const allowedOrigins = [
-  'http://localhost:5173',
-  process.env.FRONTEND_URL, // set this to your Vercel URL in Railway
+  'http://localhost',       // Docker (browsers drop the default :80)
+  'http://localhost:80',
+  'http://localhost:5173',  // local Vite dev server
+  process.env.FRONTEND_URL, // Vercel production URL
 ].filter(Boolean);
 app.use(cors({ origin: allowedOrigins }));
 app.use(express.json()); // Parse incoming JSON request bodies
