@@ -1,0 +1,35 @@
+services:
+
+  backend:
+    build: ./backend
+    ports:
+      - "3001:3001"         # host:container
+    environment:
+      PORT: 3001
+      JWT_SECRET: changeme_use_a_long_random_string_in_production
+      FRONTEND_URL: http://localhost:80
+      DB_PATH: /app/data/bank.db
+    volumes:
+      - db-data:/app/data   # persists the SQLite database between restarts
+    networks:
+      - app-network
+
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        VITE_API_URL: http://localhost:3001/api
+    ports:
+      - "80:80"             # serve the app on http://localhost
+    depends_on:
+      - backend             # wait for backend to start first
+    networks:
+      - app-network
+
+# Named volume so the database isn't lost when containers restart
+volumes:
+  db-data:
+
+networks:
+  app-network:
+    driver: bridge

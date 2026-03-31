@@ -84,7 +84,9 @@ if (process.env.DATABASE_URL) {
 } else {
   // --- SQLite (local development) ---
   const Database = require('better-sqlite3');
-  const sqlite = new Database(path.join(__dirname, '../../bank.db'));
+  // Use /app/data in Docker (volume-mounted), or the project root locally
+  const dbPath = process.env.DB_PATH || path.join(__dirname, '../../bank.db');
+  const sqlite = new Database(dbPath);
   sqlite.pragma('foreign_keys = ON');
 
   sqlite.exec(`
